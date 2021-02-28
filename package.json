@@ -1,6 +1,6 @@
 {
   "name": "serially-equivalent",
-  "description": "A equivalence function comparing objects by serialized equivalence no functions or Symbols involved.",
+  "description": "An equivalence function comparing objects by serialized equivalence no nested functions or Symbols involved.",
   "author": "Benjamin Main",
   "license": "MIT",
   "main": "dist/index.js",
