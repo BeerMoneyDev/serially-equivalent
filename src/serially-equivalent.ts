@@ -161,7 +161,13 @@ function objectEquivalence<T>(
       }
     } else {
       if (
-        !internalSeriallyEquivalent(propA, propB, expandedPath, true, options)
+        !internalSeriallyEquivalent(
+          propA,
+          propB,
+          expandedPath,
+          shouldLog,
+          options,
+        )
       ) {
         return false;
       }
