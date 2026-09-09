@@ -31,9 +31,10 @@
     "build": "tsc -p tsconfig.build.json",
     "format": "prettier --write \"src/**/*.ts\"",
     "lint": "eslint \"src/**/*.ts\" --fix",
-    "test": "jest",
+    "test": "jest --testPathIgnorePatterns \"\\.bench\\.spec\\.ts$\"",
     "test:watch": "jest --watch",
-    "test:cov": "jest --coverage"
+    "test:cov": "jest --coverage --testPathIgnorePatterns \"\\.bench\\.spec\\.ts$\"",
+    "test:bench": "jest --testPathPattern \"\\.bench\\.spec\\.ts$\""
   },
   "dependencies": {
     "is-date-object": "^1.0.2",
