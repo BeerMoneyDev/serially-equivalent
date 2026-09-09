@@ -34,6 +34,16 @@ function objectEquivalence<T>(
     );
     return false;
   }
+  // Root arrays and arrays nested inside arrays never reach the key loop below
+  // as properties, so the unordered comparison is applied here when requested.
+  if (
+    options?.arrayOrderingScope === 'all' &&
+    !options.requireArrayOrdering &&
+    isActualArray(a) &&
+    isActualArray(b)
+  ) {
+    return unorderedArraysEquivalent(a, b, propertyPath, shouldLog, options);
+  }
   // Handle Date Objects
   if (isDate(a) !== isDate(b)) {
     logNoMatch(
@@ -133,30 +143,15 @@ function objectEquivalence<T>(
       isActualArray(propA) &&
       isActualArray(propB)
     ) {
-      if (propA.length !== propB.length) {
-        logNoMatch(
+      if (
+        !unorderedArraysEquivalent(
+          propA,
+          propB,
           expandedPath,
           shouldLog,
           options,
-          `Array length mismatch...
-          length actual: ${propA.length}
-          length expected: ${propB.length}`,
-        );
-        return false;
-      }
-      if (
-        !propA.every((x) =>
-          propB.some((y) =>
-            internalSeriallyEquivalent(y, x, expandedPath, false, options),
-          ),
         )
       ) {
-        logNoMatch(
-          expandedPath,
-          shouldLog,
-          options,
-          `Array ignore ordering no matching element`,
-        );
         return false;
       }
     } else {
@@ -172,6 +167,55 @@ function objectEquivalence<T>(
         return false;
       }
     }
+  }
+  return true;
+}
+
+/**
+ * Compare two arrays ignoring element order: same length, and every element of
+ * `a` has its own (not already matched) equivalent element in `b`.
+ */
+function unorderedArraysEquivalent(
+  a: Array<any>,
+  b: Array<any>,
+  propertyPath: string,
+  shouldLog: boolean,
+  options?: SeriallyEquivalentOptions,
+): boolean {
+  if (a.length !== b.length) {
+    logNoMatch(
+      propertyPath,
+      shouldLog,
+      options,
+      `Array length mismatch...
+          length actual: ${a.length}
+          length expected: ${b.length}`,
+    );
+    return false;
+  }
+  // Track which b-elements have been matched so duplicates in a (e.g. [x, x])
+  // cannot both match the same single element in b (e.g. [x, y]).
+  const used = new Array<boolean>(b.length).fill(false);
+  const allMatch = a.every((x) => {
+    const idx = b.findIndex(
+      (y, i) =>
+        !used[i] &&
+        internalSeriallyEquivalent(y, x, propertyPath, false, options),
+    );
+    if (idx === -1) {
+      return false;
+    }
+    used[idx] = true;
+    return true;
+  });
+  if (!allMatch) {
+    logNoMatch(
+      propertyPath,
+      shouldLog,
+      options,
+      `Array ignore ordering no matching element`,
+    );
+    return false;
   }
   return true;
 }

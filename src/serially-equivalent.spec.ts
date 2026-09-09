@@ -424,6 +424,25 @@ describe('serially-equivalent', () => {
     ).toBeTruthy();
     expect(deepEqual(actual, expected)).toBeFalsy();
   });
+
+  it('should not let a duplicated array element match one expected element twice when ordering is not required', () => {
+    actual = {
+      subObj: { str: 'hi', num: 43, arr: [{ str: 'jon' }, { str: 'jon' }] },
+    };
+    expected = {
+      subObj: { str: 'hi', num: 43, arr: [{ str: 'jon' }, { str: 'belushi' }] },
+    };
+    expect(
+      seriallyEquivalent<TestObject>(actual, expected, {
+        requireArrayOrdering: false,
+      }),
+    ).toBeFalsy();
+    expect(
+      seriallyEquivalent<TestObject>(expected, actual, {
+        requireArrayOrdering: false,
+      }),
+    ).toBeFalsy();
+  });
 });
 
 interface TestObject {
