@@ -40,7 +40,7 @@ assert.equal(deepEqual(a,b), false);
 
 #### RequireArrayOrdering
 
-By default array ordering is required but it can be easily disabled as seen below.
+By default array ordering is **not** required: when `requireArrayOrdering` is unset it behaves as `false`, so arrays that are properties of the compared objects are matched by content regardless of element order. Set `requireArrayOrdering: true` to compare arrays index by index. The example below spells the default out explicitly.
 
 
 ```ts
