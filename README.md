@@ -63,6 +63,31 @@ assert.equal(deepEqual(a,b), false);
 ```
 <br/>
 
+#### ArrayOrderingScope
+
+By default `requireArrayOrdering: false` only applies to arrays that are properties of the compared objects.
+A bare array compared at the root, or an array nested directly inside another array, is still compared index by index.
+Set `arrayOrderingScope: 'all'` to ignore ordering for those arrays too. The default is `'properties'`, and the option has no effect when `requireArrayOrdering` is `true`.
+
+
+```ts
+import { seriallyEquivalent, SeriallyEquivalentOptions } from 'serially-equivalent';
+
+const a = [{ name: 'Ben'}, { name: 'Sam'}];
+const b = [{ name: 'Sam'}, { name: 'Ben'}];
+
+assert.equal(seriallyEquivalent(a,b, { requireArrayOrdering: false }), false);
+
+const opts: SeriallyEquivalentOptions = {
+    requireArrayOrdering: false,
+    arrayOrderingScope: 'all',
+}
+assert.equal(seriallyEquivalent(a,b, opts), true);
+assert.equal(seriallyEquivalent([[1, 2], [3]], [[3], [2, 1]], opts), true);
+
+```
+<br/>
+
 #### ExcludedProperties
 
 You can exclude properties from comparison by specifying a string array of properties to be excluded.

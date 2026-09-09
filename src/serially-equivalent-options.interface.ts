@@ -12,6 +12,16 @@ export interface SeriallyEquivalentOptions {
   requireArrayOrdering?: boolean;
 
   /**
+   * Which arrays `requireArrayOrdering: false` applies to.
+   * 'properties' (default) ignores ordering only for arrays that are properties of
+   * the compared objects; a bare array compared at the root, or an array nested
+   * directly inside another array, is still compared index by index.
+   * 'all' also ignores ordering for the root value and for arrays nested inside arrays.
+   * Has no effect when requireArrayOrdering is true.
+   */
+  arrayOrderingScope?: 'properties' | 'all';
+
+  /**
    * If specific properties need to be excluded from comparison that can be done so here.
    * Everything starts with root.
    */

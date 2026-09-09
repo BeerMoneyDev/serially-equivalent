@@ -34,6 +34,16 @@ function objectEquivalence<T>(
     );
     return false;
   }
+  // Root arrays and arrays nested inside arrays never reach the key loop below
+  // as properties, so the unordered comparison is applied here when requested.
+  if (
+    options?.arrayOrderingScope === 'all' &&
+    !options.requireArrayOrdering &&
+    isActualArray(a) &&
+    isActualArray(b)
+  ) {
+    return unorderedArraysEquivalent(a, b, propertyPath, shouldLog, options);
+  }
   // Handle Date Objects
   if (isDate(a) !== isDate(b)) {
     logNoMatch(
