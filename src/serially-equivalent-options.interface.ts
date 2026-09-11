@@ -7,7 +7,8 @@ export interface SeriallyEquivalentOptions {
    * Does the order of elements in arrays matter to your usecase?
    * Or... do you only care that the array length matches and that all elements are
    * equivalent by value.
-   * Defaults to true.
+   * Defaults to false: when unset, array ordering is NOT required and arrays are
+   * matched by content. Set to true to compare arrays index by index.
    */
   requireArrayOrdering?: boolean;
 
